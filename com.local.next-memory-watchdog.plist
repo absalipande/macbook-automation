@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.local.next-memory-watchdog</string>
+	<key>LowPriorityIO</key>
+	<true/>
+	<key>Nice</key>
+	<integer>10</integer>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/python3</string>
+		<string>/Users/absalipande/.local/bin/next-memory-watchdog.py</string>
+		<string>--warn-gb</string>
+		<string>6</string>
+		<string>--stop-gb</string>
+		<string>9</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/absalipande/Library/Logs/next-memory-watchdog/watchdog.err</string>
+	<key>StandardOutPath</key>
+	<string>/Users/absalipande/Library/Logs/next-memory-watchdog/watchdog.log</string>
+	<key>StartInterval</key>
+	<integer>180</integer>
+</dict>
+</plist>
