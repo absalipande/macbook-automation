@@ -138,3 +138,42 @@ To uninstall:
 launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.local.next-memory-watchdog.plist
 rm ~/Library/LaunchAgents/com.local.next-memory-watchdog.plist ~/.local/bin/next-memory-watchdog.py
 ```
+
+## Weekly temp and cache cleanup
+
+`com.local.clean-mac-caches.plist` runs every Sunday at 10:00 (local time, Asia/Manila).
+If the Mac is asleep then, it runs on wake; if it is shut down, that week is skipped.
+It is the macOS take on clearing `%TEMP%` and app caches on Windows:
+
+- `$TMPDIR`: files neither modified nor read in 7 days (`--old-days`), skipping sockets,
+  then the directories they leave empty.
+- `~/Library/Caches`: whole app cache folders untouched for 7 days and at least 50 MB
+  (`--min-cache-mb`). Skips `com.apple.*`, `ms-playwright` (veyra's e2e browsers) and the
+  tool caches below.
+- Tool caches, via each tool: `brew cleanup --prune=7`, `pnpm store prune`,
+  `go clean -cache`, and `npm cache clean --force` once `~/.npm/_cacache` reaches 3 GB
+  (`--npm-max-gb`).
+
+It never touches `~/Library/Application Support` (the real `%APPDATA%`: app settings and
+data) or `~/.Trash`. Without `--delete` it only reports:
+
+```sh
+/usr/bin/python3 scripts/clean-mac-caches.py
+```
+
+Output goes to `~/Library/Logs/clean-mac-caches/` (`cleaner.log`, `cleaner.err`,
+`report.json`). Install:
+
+```sh
+mkdir -p ~/.local/bin ~/Library/Logs/clean-mac-caches
+cp scripts/clean-mac-caches.py ~/.local/bin/
+cp com.local.clean-mac-caches.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.local.clean-mac-caches.plist
+```
+
+Uninstall:
+
+```sh
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.local.clean-mac-caches.plist
+rm ~/Library/LaunchAgents/com.local.clean-mac-caches.plist ~/.local/bin/clean-mac-caches.py
+```
